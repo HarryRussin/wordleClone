@@ -63,7 +63,7 @@ const keys: Keys[][][] = [
 ]
 
 const words = [
-  'grill','house','mouse','clear','clean','photo','farms','alarm','karma','words','harry','roads','snowy','likes','krill','fairy'
+  'grill','house','mouse','clear','clean','photo','farms','alarm','karma','sword','words','harry','roads','oiled','theft','crumb','drone','snowy','likes','krill','fairy'
 ]
 
 const CorrectWordle = words[Math.floor(Math.random() * words.length)]
@@ -184,11 +184,14 @@ export default function Home() {
         {`
           body {
             background: black;
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
           }
         `}
       </style>
 
-      <div className="mt-20 flex w-full flex-col md:flex-row justify-center">
+      <div className="mt-10 md:mt-20 flex w-full flex-col md:flex-row justify-center">
         {/* Grid */}
 
         <div className="w-fit mx-auto md:mx-0">
@@ -206,18 +209,18 @@ export default function Home() {
 
         {/* Keyboard */}
         <div className="mx-5 text-center">
-          <h1 className="my-10 border border-white text-3xl text-white flex justify-center items-center h-12">
+          <h1 className="md:my-10 my-4 border border-white text-xl md:text-3xl text-white flex justify-center items-center h-12 overflow-auto">
             {title}
           </h1>
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col mb-5 items-center justify-center">
             {keyboard.map((rows) => (
-              <div className={`my-[0.25rem] flex gap-2 text-white`}>
+              <div className={`my-[0.25rem] flex gap-1 md:gap-2 text-white`}>
                 {rows[0].map((key) => (
                   <h1
                     onClick={() => handleKeyPress(key)}
-                    className={`h-fit w-fit ${
+                    className={`h-fit w-fit transition-all ${
                       key.accuracy === '' && 'bg-white'
-                    } px-5 py-2 text-black 
+                    } md:px-5 px-4 py-1 md:py-2 text-black 
                     ${key.accuracy === 'correct'&&'bg-green-500'}
                     ${key.accuracy === 'used'&&'bg-gray-500'}
                     ${key.accuracy === 'placementErr'&&'bg-yellow-500'}`}
@@ -228,7 +231,7 @@ export default function Home() {
               </div>
             ))}
             {gameOver&&
-            <a href='/' className='text-white'>click me to try again!</a>
+            <a href='/' className='text-white mt-1'>click me to try again!</a>
           }
           </div>
         </div>
