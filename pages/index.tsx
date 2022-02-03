@@ -73,7 +73,7 @@ export default function Home() {
   const [keyboard, setkeyboard] = useState(keys)
   const [wordlePos, setwordlePos] = useState(0)
   const [wordleNum, setwordleNum] = useState(0)
-  const [title, settitle] = useState('WORDLE')
+  const [title, settitle] = useState('HERDLE')
   const [gameOver, setgameOver] = useState(false)
 
   const handleKeyPress = (key: any) => {
@@ -137,8 +137,7 @@ export default function Home() {
     setwordleNum(wordleNum + 1)
     setwordlePos(0)
     setwordles(wordlesCop)
-    console.log(wordles);
-    
+
     settitle(' ')
 
   }
@@ -175,7 +174,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Wordle</title>
+        <title>Herdle</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -190,6 +189,8 @@ export default function Home() {
           }
         `}
       </style>
+
+      {/* <div className="absolute top-1 right-1 text-white">hi</div> */}
 
       <div className="mt-10 md:mt-20 flex w-full flex-col md:flex-row justify-center">
         {/* Grid */}
@@ -209,7 +210,7 @@ export default function Home() {
 
         {/* Keyboard */}
         <div className="mx-5 text-center">
-          <h1 className="md:my-10 my-4 border border-white text-xl md:text-3xl text-white flex justify-center items-center h-12 overflow-auto">
+          <h1 className="md:my-10 my-4 border min-h-[2.5rem] border-white text-xl md:text-3xl text-white flex justify-center items-center h-auto p-1">
             {title}
           </h1>
           <div className="flex flex-col mb-5 items-center justify-center">
@@ -218,9 +219,9 @@ export default function Home() {
                 {rows[0].map((key) => (
                   <h1
                     onClick={() => handleKeyPress(key)}
-                    className={`h-fit w-fit transition-all ${
+                    className={`h-fit w-fit transition-all hover:bg-gray-200 ${
                       key.accuracy === '' && 'bg-white'
-                    } md:px-5 px-4 py-1 md:py-2 text-black 
+                    } md:px-5 px-2 py-3 md:py-2 text-black 
                     ${key.accuracy === 'correct'&&'bg-green-500'}
                     ${key.accuracy === 'used'&&'bg-gray-500'}
                     ${key.accuracy === 'placementErr'&&'bg-yellow-500'}`}
