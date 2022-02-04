@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { useState } from 'react'
+import { goalwords, checkwords } from '../words'
 
 interface Keys {
   letter: string
@@ -8,12 +9,48 @@ interface Keys {
 
 const data: Keys[][] = [
   // STARTER DATA FOR GUESSES
-  [{letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}],
-  [{letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}],
-  [{letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}],
-  [{letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}],
-  [{letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}],
-  [{letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}, {letter:'',accuracy:''}],
+  [
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+  ],
+  [
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+  ],
+  [
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+  ],
+  [
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+  ],
+  [
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+  ],
+  [
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+    { letter: '', accuracy: '' },
+  ],
 ]
 
 const keys: Keys[][][] = [
@@ -62,11 +99,7 @@ const keys: Keys[][][] = [
   ],
 ]
 
-const words = [
-  'grill','house','mouse','clear','clean','photo','farms','alarm','karma','sword','words','harry','roads','oiled','theft','crumb','drone','snowy','likes','krill','fairy'
-]
-
-const CorrectWordle = words[Math.floor(Math.random() * words.length)]
+const CorrectWordle = goalwords[Math.floor(Math.random() * goalwords.length)]
 
 export default function Home() {
   const [wordles, setwordles] = useState(data)
@@ -75,8 +108,11 @@ export default function Home() {
   const [wordleNum, setwordleNum] = useState(0)
   const [title, settitle] = useState('HERDLE')
   const [gameOver, setgameOver] = useState(false)
+  const [invalid, setinvalid] = useState(false)
+  const [playingWithValid, setplayingWithValid] = useState(false)
 
   const handleKeyPress = (key: any) => {
+    setinvalid(false)
     if (gameOver) {
       return
     }
@@ -97,8 +133,8 @@ export default function Home() {
     }
   }
 
-  const loseGame = ()=>{
-    settitle(':( you didn\'t get it, the word was: '+CorrectWordle)
+  const loseGame = () => {
+    settitle(":( you didn't get it, the word was: " + CorrectWordle)
     setgameOver(true)
   }
 
@@ -106,30 +142,47 @@ export default function Home() {
     let wordCheck = wordles[wordleNum]
     let wordlesCop = wordles.slice()
 
-    const titles:string[] = []
-    wordles[wordleNum].map(letter => {
+    const titles: string[] = []
+    wordles[wordleNum].map((letter) => {
       titles.push(letter.letter)
-    });
+    })
 
-    if (wordleNum === 5 && titles.join('') !== CorrectWordle.toUpperCase()){
+
+    if (playingWithValid){
+    if (!checkwords.includes(titles.join('').toLowerCase())) {
+      console.log(wordlesCop)
+
+      for (let i = 0; i < wordCheck.length; i++) {
+        wordlesCop[wordleNum][i].accuracy = 'incorrect'
+      }
+      console.log(wordlesCop)
+
+      settitle('that is not a valid word')
+      setinvalid(true)
+      return
+    }
+  }
+
+    if (wordleNum === 5 && titles.join('') !== CorrectWordle.toUpperCase()) {
       loseGame()
       return
     }
-    
+
     for (let i = 0; i < wordCheck.length; i++) {
-      if (CorrectWordle.toUpperCase()[i] === wordCheck[i].letter){
-        SearchKeyboard(wordCheck[i].letter,'correct')
+      if (CorrectWordle.toUpperCase()[i] === wordCheck[i].letter) {
+        SearchKeyboard(wordCheck[i].letter, 'correct')
         wordlesCop[wordleNum][i].accuracy = 'correct'
-      }else if(CorrectWordle.toUpperCase().split('').includes(wordCheck[i].letter)){
-        SearchKeyboard(wordCheck[i].letter,'placementErr')
+      } else if (
+        CorrectWordle.toUpperCase().split('').includes(wordCheck[i].letter)
+      ) {
+        SearchKeyboard(wordCheck[i].letter, 'placementErr')
         wordlesCop[wordleNum][i].accuracy = 'placementErr'
-      }else{
-        SearchKeyboard(wordCheck[i].letter,'used')
+      } else {
+        SearchKeyboard(wordCheck[i].letter, 'used')
+        wordlesCop[wordleNum][i].accuracy = 'used'
       }
     }
 
-
-    
     if (titles.join('') === CorrectWordle.toUpperCase()) {
       winWordle()
       return
@@ -139,18 +192,17 @@ export default function Home() {
     setwordles(wordlesCop)
 
     settitle(' ')
-
   }
 
-  const SearchKeyboard = (key:string,modification:string)=>{
+  const SearchKeyboard = (key: string, modification: string) => {
     let keyboardCop = keyboard.slice()
-        keyboardCop.forEach((letters) => {
-          letters[0].forEach((letter) => {
-            if (letter.letter === key) {
-              letter.accuracy = modification
-            }
-          })
-        })
+    keyboardCop.forEach((letters) => {
+      letters[0].forEach((letter) => {
+        if (letter.letter === key) {
+          letter.accuracy = modification
+        }
+      })
+    })
   }
 
   const addKeyToWordle = (key: string, pos: number) => {
@@ -158,10 +210,10 @@ export default function Home() {
     wordles[wordleNum][pos].letter = key
 
     setwordles(wordleCop)
-    const titles:string[] =[]
-    wordles[wordleNum].map(letter => {
+    const titles: string[] = []
+    wordles[wordleNum].map((letter) => {
       titles.push(letter.letter)
-    });
+    })
     settitle(titles.join('').toString())
   }
 
@@ -191,18 +243,31 @@ export default function Home() {
       </style>
 
       {/* <div className="absolute top-1 right-1 text-white">hi</div> */}
+      <div onClick={()=>setplayingWithValid(!playingWithValid)} className="absolute top-2 text-white left-2">
+        {
+          playingWithValid
+          ?<p>Play with any inputs?</p>
+          :<p>Play with only valid words?</p>
+        }
+        
+      </div>
 
-      <div className="mt-10 md:mt-20 flex w-full flex-col md:flex-row justify-center">
+      <div className="mt-10 flex w-full flex-col justify-center md:mt-20 md:flex-row">
         {/* Grid */}
 
-        <div className="w-fit mx-auto md:mx-0">
+        <div className="mx-auto w-fit md:mx-0">
           {wordles.map((row) => (
             <div className=" grid grid-cols-5">
               {row.map((key) => (
-                <p className={`wordle
-                ${key.accuracy==='correct'&&'bg-green-500'}
-                ${key.accuracy==='placementErr'&&'bg-yellow-500'}
-                `}>{key.letter}</p>
+                <p
+                  className={`wordle
+                ${key.accuracy === 'correct' && 'bg-green-500'}
+                ${key.accuracy === 'placementErr' && 'bg-yellow-500'}
+                ${invalid && key.accuracy === 'incorrect' ? 'bg-red-500' : ''}
+                `}
+                >
+                  {key.letter}
+                </p>
               ))}
             </div>
           ))}
@@ -210,30 +275,32 @@ export default function Home() {
 
         {/* Keyboard */}
         <div className="mx-5 text-center">
-          <h1 className="md:my-10 my-4 border min-h-[2.5rem] border-white text-xl md:text-3xl text-white flex justify-center items-center h-auto p-1">
+          <h1 className="my-4 flex h-auto min-h-[2.5rem] items-center justify-center border border-white p-1 text-xl text-white md:my-10 md:text-3xl">
             {title}
           </h1>
-          <div className="flex flex-col mb-5 items-center justify-center">
+          <div className="mb-5 flex flex-col items-center justify-center">
             {keyboard.map((rows) => (
-              <div className={`my-[0.25rem] flex gap-1 md:gap-2 text-white`}>
+              <div className={`my-[0.25rem] flex gap-1 text-white md:gap-2`}>
                 {rows[0].map((key) => (
                   <h1
                     onClick={() => handleKeyPress(key)}
                     className={`h-fit w-fit transition-all hover:bg-gray-200 ${
                       key.accuracy === '' && 'bg-white'
-                    } md:px-5 px-2 py-3 md:py-2 text-black 
-                    ${key.accuracy === 'correct'&&'bg-green-500'}
-                    ${key.accuracy === 'used'&&'bg-gray-500'}
-                    ${key.accuracy === 'placementErr'&&'bg-yellow-500'}`}
+                    } px-2 py-3 text-black md:px-5 md:py-2 
+                    ${key.accuracy === 'correct' && 'bg-green-500'}
+                    ${key.accuracy === 'used' && 'bg-gray-500'}
+                    ${key.accuracy === 'placementErr' && 'bg-yellow-500'}`}
                   >
                     {key.letter}
                   </h1>
                 ))}
               </div>
             ))}
-            {gameOver&&
-            <a href='/' className='text-white mt-1'>click me to try again!</a>
-          }
+            {gameOver && (
+              <a href="/" className="mt-1 text-white">
+                click me to try again!
+              </a>
+            )}
           </div>
         </div>
       </div>
