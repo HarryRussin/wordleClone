@@ -1,106 +1,15 @@
-import React, { useState } from 'react'
-import { checkwords, goalwords } from '../words'
+import React, { useEffect, useState } from 'react'
+import { checkwords, goalwords,keys,letters,data } from '../words'
 
 interface Keys {
-    letter: string
-    accuracy: string
-  }
-  
-  const data: Keys[][] = [
-    // STARTER DATA FOR GUESSES
-    [
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-    ],
-    [
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-    ],
-    [
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-    ],
-    [
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-    ],
-    [
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-    ],
-    [
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-      { letter: '', accuracy: '' },
-    ],
-  ]
-  
-  const keys: Keys[][][] = [
-    //TOTAL KEYS
-    [
-      //ROWS OF KEYBOARD
-      [
-        //THE KEYS THEMSELVES
-        { letter: 'Q', accuracy: '' },
-        { letter: 'W', accuracy: '' },
-        { letter: 'E', accuracy: '' },
-        { letter: 'R', accuracy: '' },
-        { letter: 'T', accuracy: '' },
-        { letter: 'Y', accuracy: '' },
-        { letter: 'U', accuracy: '' },
-        { letter: 'I', accuracy: '' },
-        { letter: 'O', accuracy: '' },
-        { letter: 'P', accuracy: '' },
-      ],
-    ],
-    [
-      [
-        { letter: 'A', accuracy: '' },
-        { letter: 'S', accuracy: '' },
-        { letter: 'D', accuracy: '' },
-        { letter: 'F', accuracy: '' },
-        { letter: 'G', accuracy: '' },
-        { letter: 'H', accuracy: '' },
-        { letter: 'J', accuracy: '' },
-        { letter: 'K', accuracy: '' },
-        { letter: 'L', accuracy: '' },
-      ],
-    ],
-    [
-      [
-        { letter: 'ENTER', accuracy: '' },
-        { letter: 'Z', accuracy: '' },
-        { letter: 'X', accuracy: '' },
-        { letter: 'C', accuracy: '' },
-        { letter: 'V', accuracy: '' },
-        { letter: 'B', accuracy: '' },
-        { letter: 'N', accuracy: '' },
-        { letter: 'M', accuracy: '' },
-        { letter: 'DEL', accuracy: '' },
-      ],
-    ],
-  ]
-  
-  const CorrectWordle = goalwords[Math.floor(Math.random() * goalwords.length)]
+  letter: string
+  accuracy: string
+}
 
-function Wordle({dark,playingWithValid}:any) {
+
+const CorrectWordle = goalwords[Math.floor(Math.random() * goalwords.length)]
+
+function Wordle({ dark, playingWithValid, setscores, scores, sethealth, health }: any) {
   const [wordles, setwordles] = useState(data)
   const [keyboard, setkeyboard] = useState(keys)
   const [wordlePos, setwordlePos] = useState(0)
@@ -109,34 +18,71 @@ function Wordle({dark,playingWithValid}:any) {
   const [gameOver, setgameOver] = useState(false)
   const [invalid, setinvalid] = useState(false)
 
+  const keyboardpress = (e: any) => {
+    const key = { letter: e.key.toUpperCase() }
+
+    handleKeyPress(key)
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', keyboardpress)
+    return () => {
+      window.removeEventListener('keydown', keyboardpress)
+    }
+  }, [keyboardpress])
+
   const handleKeyPress = (key: any) => {
-    setinvalid(false)
+    console.log(CorrectWordle);
     if (gameOver) {
       return
     }
+
     if (key.letter === 'ENTER') {
       if (wordleNum <= 5 && wordlePos === 5) {
         checkAndSubmitWord()
       }
       return
-    } else if (key.letter === 'DEL') {
+    } else if (key.letter === 'DEL' || key.letter === 'BACKSPACE') {
       if (wordlePos <= 5 && wordlePos >= 1) {
         setwordlePos(wordlePos - 1)
         addKeyToWordle('', wordlePos - 1)
+        setinvalid(false)
       }
       return
     } else if (wordlePos <= 4) {
+      if(!letters.includes(key.letter.toLowerCase())){
+        return
+      }
       addKeyToWordle(key.letter, wordlePos)
+      setinvalid(false)
+
       setwordlePos(wordlePos + 1)
     }
   }
 
+  const handleScore = () => {
+    const score = scores + 6 - wordleNum
+    setscores(score)
+    localStorage.setItem('score', score.toString())
+  }
+
+  const handleHeath = ()=>{
+    const healths:number = health-1
+    if (healths === 0){
+      settitle('You Died!')
+    }
+    sethealth(healths)
+    localStorage.setItem('health', healths.toString())
+  }
+
   const loseGame = () => {
     settitle(":( you didn't get it, the word was: " + CorrectWordle)
+    handleHeath()
     setgameOver(true)
   }
 
   const checkAndSubmitWord = () => {
+
     let wordCheck = wordles[wordleNum]
     let wordlesCop = wordles.slice()
 
@@ -147,22 +93,15 @@ function Wordle({dark,playingWithValid}:any) {
 
     if (playingWithValid) {
       if (!checkwords.includes(titles.join('').toLowerCase())) {
-        console.log(wordlesCop)
 
         for (let i = 0; i < wordCheck.length; i++) {
           wordlesCop[wordleNum][i].accuracy = 'incorrect'
         }
-        console.log(wordlesCop)
 
         settitle('that is not a valid word')
         setinvalid(true)
         return
       }
-    }
-
-    if (wordleNum === 5 && titles.join('') !== CorrectWordle.toUpperCase()) {
-      loseGame()
-      return
     }
 
     for (let i = 0; i < wordCheck.length; i++) {
@@ -184,9 +123,16 @@ function Wordle({dark,playingWithValid}:any) {
       winWordle()
       return
     }
+
+    
     setwordleNum(wordleNum + 1)
     setwordlePos(0)
     setwordles(wordlesCop)
+
+    if (wordleNum === 5 && titles.join('') !== CorrectWordle.toUpperCase()) {
+      loseGame()
+      return
+    }
 
     settitle(' ')
   }
@@ -200,6 +146,7 @@ function Wordle({dark,playingWithValid}:any) {
         }
       })
     })
+    setkeyboard(keyboardCop)
   }
 
   const addKeyToWordle = (key: string, pos: number) => {
@@ -217,17 +164,16 @@ function Wordle({dark,playingWithValid}:any) {
   const winWordle = () => {
     console.log('you won!')
     settitle('You won! Congratulations!')
+    handleScore()
     setgameOver(true)
   }
 
   return (
     <div>
-
-
-      <div className="mb-0 mt-10 md:my-10 flex w-full flex-col justify-center md:flex-row">
+      <div className="mb-0 mt-10 flex w-full flex-col justify-center lg:my-10 lg:flex-row">
         {/* Grid */}
 
-        <div className="mx-auto w-fit md:mx-0 p-4 rounded-xl">
+        <div className="mx-auto w-fit rounded-xl p-4 lg:mx-0">
           {wordles.map((row) => (
             <div className=" grid grid-cols-5">
               {row.map((key) => (
@@ -246,10 +192,12 @@ function Wordle({dark,playingWithValid}:any) {
         </div>
 
         {/* Keyboard */}
-        <div className={`mx-5 text-center ${
-          !dark ? 'text-black' : 'text-white'
-        }`}>
-          <h1 className={`my-4 flex h-auto transition-all min-h-[2.5rem] items-center justify-center text-ellipsis text-xl  md:my-10 md:text-3xl`}>
+        <div
+          className={`mx-5 text-center ${!dark ? 'text-black' : 'text-white'}`}
+        >
+          <h1
+            className={`my-4 flex h-auto min-h-[2.5rem] items-center justify-center text-ellipsis text-xl transition-all  md:my-10 md:text-3xl`}
+          >
             {title}
           </h1>
           <div className="mb-5 flex flex-col items-center justify-center">
@@ -258,10 +206,10 @@ function Wordle({dark,playingWithValid}:any) {
                 {rows[0].map((key) => (
                   <h1
                     onClick={() => handleKeyPress(key)}
-                    className={`h-fit w-fit transition-all hover:bg-gray-200 ${
+                    className={`h-fit w-fit transition-all text-xs md:text-xl hover:bg-gray-200 ${
                       key.accuracy === '' && 'bg-white'
                     } px-2 py-3 text-black md:px-5 md:py-2 
-                    ${!dark && key.accuracy===''?'bg-gray-200':''}
+                    ${!dark && key.accuracy === '' ? 'bg-gray-200' : ''}
                     ${key.accuracy === 'correct' && 'bg-green-500'}
                     ${key.accuracy === 'used' && 'bg-gray-500'}
                     ${key.accuracy === 'placementErr' && 'bg-yellow-500'}
@@ -273,9 +221,10 @@ function Wordle({dark,playingWithValid}:any) {
               </div>
             ))}
             {gameOver && (
-              <a href="/" className={`mt-1  ${
-                !dark ? 'text-black' : 'text-white'
-              }`}>
+              <a
+                href="/"
+                className={`mt-1  ${!dark ? 'text-black' : 'text-white'}`}
+              >
                 click me to try again!
               </a>
             )}

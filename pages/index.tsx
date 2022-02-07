@@ -2,24 +2,37 @@ import Head from 'next/head'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import Wordle from '../components/wordle'
 import { MoonIcon, SunIcon } from '@heroicons/react/outline'
+import Navbar from '../components/navbar'
 
 export default function Home() {
   const [playingWithValid, setplayingWithValid] = useState(true)
   const [dark, setdark] = useState(true)
+  const [scores, setscores] = useState(0)
+  const [health, sethealth] = useState(3)
 
-  const handleDark = ()=>{
+  const handleDark = () => {
     setdark(!dark)
-    localStorage.setItem('dark',dark.toString())
+    localStorage.setItem('dark', dark.toString())
   }
 
   useLayoutEffect(() => {
-    let x =localStorage.getItem('dark')
-    if (x === 'true'){
-      console.log('light/false');
+    let score = localStorage.getItem('score')
+    let x = localStorage.getItem('dark')
+    let health = localStorage.getItem('health')
+
+    if (health) {
+      sethealth(parseInt(health))
+      console.log(health)
+    }
+    if (score) {
+      setscores(parseInt(score))
+    }
+    if (x === 'true') {
+      console.log('light/false')
       setdark(false)
     }
     if (x === 'false') {
-      console.log('true/dark');
+      console.log('true/dark')
       setdark(true)
     }
   }, [])
@@ -37,28 +50,27 @@ export default function Home() {
         `}
       </style>
 
-      <div
-        onClick={() => setplayingWithValid(!playingWithValid)}
-        className={`absolute top-2 left-2 ${
-          dark ? 'text-white' : 'text-black'
-        }`}
-      >
-        {playingWithValid ? (
-          <p>Play with any inputs?</p>
-        ) : (
-          <p>Play with only valid words?</p>
-        )}
-      </div>
-      <div
-        onClick={handleDark}
-        className={`absolute top-2 right-2 ${
-          dark ? 'text-white' : 'text-black'
-        }`}
-      >
-        {!dark ? <MoonIcon className="w-6" /> : <SunIcon className="w-6" />}
-      </div>
+      <Navbar
+        scores={scores}
+        health={health}
+        playingWithValid={playingWithValid}
+        setplayingWithValid={setplayingWithValid}
+        dark={dark}
+        handleDark={handleDark}
+      />
 
-      <Wordle playingWithValid={playingWithValid} dark={dark} />
+      {health > 0 ? (
+        <Wordle
+          sethealth={sethealth}
+          health={health}
+          playingWithValid={playingWithValid}
+          scores={scores}
+          setscores={setscores}
+          dark={dark}
+        />
+      ) : (
+        <p className={` mt-32 text-2xl text-center ${dark ? 'text-white' : 'text-black'}`}>you died <br/> there is no way to try again. you lost. you deserve this.<br/>L</p>
+      )}
     </div>
   )
 }

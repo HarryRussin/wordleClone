@@ -1,4 +1,98 @@
 module.exports = {
+  letters:'abcdefghijklmnopqrstuvwxyz'
+  ,
+  data:[
+    // STARTER DATA FOR GUESSES
+    [
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+    ],
+    [
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+    ],
+    [
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+    ],
+    [
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+    ],
+    [
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+    ],
+    [
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+      { letter: '', accuracy: '' },
+    ],
+  ]
+  ,
+  keys:[
+    //TOTAL KEYS
+    [
+      //ROWS OF KEYBOARD
+      [
+        //THE KEYS THEMSELVES
+        { letter: 'Q', accuracy: '' },
+        { letter: 'W', accuracy: '' },
+        { letter: 'E', accuracy: '' },
+        { letter: 'R', accuracy: '' },
+        { letter: 'T', accuracy: '' },
+        { letter: 'Y', accuracy: '' },
+        { letter: 'U', accuracy: '' },
+        { letter: 'I', accuracy: '' },
+        { letter: 'O', accuracy: '' },
+        { letter: 'P', accuracy: '' },
+      ],
+    ],
+    [
+      [
+        { letter: 'A', accuracy: '' },
+        { letter: 'S', accuracy: '' },
+        { letter: 'D', accuracy: '' },
+        { letter: 'F', accuracy: '' },
+        { letter: 'G', accuracy: '' },
+        { letter: 'H', accuracy: '' },
+        { letter: 'J', accuracy: '' },
+        { letter: 'K', accuracy: '' },
+        { letter: 'L', accuracy: '' },
+      ],
+    ],
+    [
+      [
+        { letter: 'ENTER', accuracy: '' },
+        { letter: 'Z', accuracy: '' },
+        { letter: 'X', accuracy: '' },
+        { letter: 'C', accuracy: '' },
+        { letter: 'V', accuracy: '' },
+        { letter: 'B', accuracy: '' },
+        { letter: 'N', accuracy: '' },
+        { letter: 'M', accuracy: '' },
+        { letter: 'DEL', accuracy: '' },
+      ],
+    ],
+  ]
+  ,
     goalwords:[
         "cigar",
         "rebut",
