@@ -4,7 +4,7 @@ import Wordle from '../components/wordle'
 import { MoonIcon, SunIcon } from '@heroicons/react/outline'
 
 export default function Home() {
-  const [playingWithValid, setplayingWithValid] = useState(false)
+  const [playingWithValid, setplayingWithValid] = useState(true)
   const [dark, setdark] = useState(true)
 
   const handleDark = ()=>{
