@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { checkwords, goalwords,keys,letters,data } from '../words'
+import { checkwords, goalwords,keys,letters,data } from './words'
 
 interface Keys {
   letter: string
