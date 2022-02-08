@@ -22,7 +22,6 @@ export default function Home() {
 
     if (health) {
       sethealth(parseInt(health))
-      console.log(health)
     }
     if (score) {
       setscores(parseInt(score))

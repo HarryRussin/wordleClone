@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { checkwords, goalwords,keys,letters,data } from './words'
 
-interface Keys {
-  letter: string
-  accuracy: string
-}
-
-
 const CorrectWordle = goalwords[Math.floor(Math.random() * goalwords.length)]
 
 function Wordle({ dark, playingWithValid, setscores, scores, sethealth, health }: any) {
@@ -32,7 +26,6 @@ function Wordle({ dark, playingWithValid, setscores, scores, sethealth, health }
   }, [keyboardpress])
 
   const handleKeyPress = (key: any) => {
-    console.log(CorrectWordle);
     if (gameOver) {
       return
     }
