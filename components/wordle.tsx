@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { checkwords, goalwords,keys,letters,data } from './words'
+import { checkwords, goalwords,keys,letters,data } from '../words/words.js'
 
-const CorrectWordle = goalwords[Math.floor(Math.random() * goalwords.length)]
+const CorrectWordle =  goalwords[Math.floor(Math.random() * goalwords.length)]
 
 function Wordle({ dark, playingWithValid, setscores, scores, sethealth, health }: any) {
   const [wordles, setwordles] = useState(data)
